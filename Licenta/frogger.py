@@ -38,7 +38,7 @@ class App:
 
 	def init(self):
 		self.running = True
-		self.state = 'START'
+		self.state = 'PLAYING'
 
 		self.prev_lane = 1
 		self.current_lane = 1
@@ -57,9 +57,9 @@ class App:
 		self.lanes.append( Lane( 6, c=(50, 192, 122) ) )
 		self.lanes.append( Lane( 7, c=(50, 192, 122) ) )
 		self.lanes.append( Lane( 8, t='car', c=(195, 195, 195), n=3, l=2, spc=180, spd=-2) )
-		self.lanes.append( Lane( 9, t='car', c=(195, 195, 195), n=2, l=4, spc=240, spd=-1) )
-		self.lanes.append( Lane( 10, t='car', c=(195, 195, 195), n=4, l=2, spc=130, spd=2.5) )
-		self.lanes.append( Lane( 11, t='car', c=(195, 195, 195), n=3, l=3, spc=200, spd=1) )
+		self.lanes.append( Lane( 9, t='car', c=(195, 195, 195), n=2, l=2, spc=240, spd=-1) )
+		self.lanes.append( Lane( 10, t='car', c=(195, 195, 195), n=3, l=2, spc=180, spd=1.5) )
+		self.lanes.append( Lane( 11, t='car', c=(195, 195, 195), n=3, l=2, spc=200, spd=1) )
 		self.lanes.append( Lane( 12, c=(50, 192, 122) ) )
 
 	def event(self, event):
@@ -88,7 +88,7 @@ class App:
 
 			self.frog.reset()
 			self.score.reset()
-			self.state = 'START'
+			self.state = 'PLAYING'
 
 		for lane in self.lanes:
 			lane.update()
@@ -119,16 +119,16 @@ class App:
 
 	def draw(self):
 		g_vars['window'].fill( (0, 0, 0) )
-		if self.state == 'START':
+		'''if self.state == 'START':
 
 			self.draw_text("Frogger!", g_vars['width']/2, g_vars['height']/2 - 15, 'center')
-			self.draw_text("Press ENTER to start playing.", g_vars['width']/2, g_vars['height']/2 + 15, 'center')
+			self.draw_text("Press ENTER to start playing.", g_vars['width']/2, g_vars['height']/2 + 15, 'center')'''
 
 		if self.state == 'PLAYING':
 
-			self.draw_text("Lives: {0}".format(self.score.lives), 5, 8, 'left')
-			self.draw_text("Score: {0}".format(self.score.score), 120, 8, 'left')
-			self.draw_text("High Score: {0}".format(self.score.high_score), 240, 8, 'left')
+			# self.draw_text("Lives: {0}".format(self.score.lives), 5, 8, 'left')
+			# self.draw_text("Score: {0}".format(self.score.score), 120, 8, 'left')
+			# self.draw_text("High Score: {0}".format(self.score.high_score), 240, 8, 'left')
 
 			for lane in self.lanes:
 				lane.draw()

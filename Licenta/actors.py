@@ -31,7 +31,7 @@ class Lane(Rectangle):
         self.type = t
         self.color = c
         self.obstacles = []
-        random.seed(69)
+        # random.seed(69)
         offset = random.uniform(0, 200)
         if self.type == 'car':
             o_color = (128, 128, 128)

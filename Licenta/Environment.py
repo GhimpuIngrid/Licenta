@@ -16,10 +16,14 @@ class FroggerEnv:
 
     def reset(self):
         self.gameApp.init()
+        self.gameApp.state = "PLAYING"
+        self.gameApp.draw()
         state = self.get_state()
+        self.highest_lane = 0
         return state
 
     def step(self, action):
+        self.lives_before = self.gameApp.score.lives
         self.last_action = action
         pygame.event.pump()
         if action == 0:
@@ -44,12 +48,16 @@ class FroggerEnv:
             pass  # Sta pe loc
 
         self.gameApp.update()
+        self.gameApp.draw()
+        # self.render()
         next_state = self.get_state()
+        # print("Stare in Env: ")
+        # print(next_state)
         reward = self.get_reward()
         done = self.is_done()
         # print("Vieti in frogger: ", self.gameApp.score.lives)
         # print("Done in frogger: ", done)
-        self.lives_before = self.gameApp.score.lives
+
         return next_state, reward, done, {}
 
     def render(self):
@@ -58,6 +66,8 @@ class FroggerEnv:
 
     def get_state(self):
         state = pygame.surfarray.array3d(g_vars['window'])
+        # print("State la intrare in functie: ")
+        # print(state)
         state = np.transpose(state, (1, 0, 2))
         return state
 
@@ -69,23 +79,35 @@ class FroggerEnv:
 
         # Agentul a pierdut o viață
         if self.gameApp.score.lives < self.lives_before:
-            reward -= 10  # Penalizare mare pentru pierderea unei vieți
+            reward -= 50  # Penalizare mare pentru pierderea unei vieți
+
+        elif self.gameApp.current_lane == 6:
+            reward += 50
+
+        elif self.gameApp.current_lane == 12:
+            reward += 100
 
         # Agentul a avansat o linie
         elif self.last_action == 0:
             # print("Am primit punct")
-            reward += 20  # Recompensă mare pentru progres
+            if self.gameApp.current_lane > self.highest_lane:
+                self.highest_lane = self.gameApp.current_lane
+                reward += 10 * self.gameApp.current_lane
+            reward += 2  # Recompensă mare pentru progres
 
-        elif self.gameApp.current_lane < self.gameApp.prev_lane:
-            reward -= 20  # Penalizam pentru intoarcere
+        elif self.last_action == 1:
+            if self.gameApp.current_lane == 7:
+                reward -= 50
+            else:
+                reward -= 2  # Penalizam pentru intoarcere
 
         # Agentul a ales să stea pe loc
         elif self.last_action == 4:
-            reward -= 2  # Penalizare mică pentru inactivitate
+            reward -= 0  # Penalizare mică pentru inactivitate
 
         # Agentul se deplasează lateral fără progres
         elif self.last_action in [2, 3]:
-            reward -= 1  # Penalizare mică pentru mișcare fără progres
+            reward -= 0  # Penalizare mică pentru mișcare fără progres
 
         return reward
 
